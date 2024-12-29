@@ -7,6 +7,8 @@ import com.github.retrooper.packetevents.util.Vector3d;
 import com.github.retrooper.packetevents.wrapper.PacketWrapper;
 import com.github.retrooper.packetevents.wrapper.play.server.*;
 import me.tofaa.entitylib.EntityLib;
+import me.tofaa.entitylib.EntityLibAPI;
+import me.tofaa.entitylib.ViewerMetaTracker;
 import me.tofaa.entitylib.container.EntityContainer;
 import me.tofaa.entitylib.meta.EntityMeta;
 import me.tofaa.entitylib.meta.types.ObjectData;
@@ -41,6 +43,7 @@ public class WrapperEntity implements Tickable {
     private final Set<Integer> passengers;
     private EntityContainer parent;
     private final List<ViewerRule> viewerRules;
+    private final ViewerMetaTracker viewerTracker;
 
     public WrapperEntity(int entityId, UUID uuid, EntityType entityType, EntityMeta entityMeta) {
         this.entityId = entityId;
@@ -52,6 +55,7 @@ public class WrapperEntity implements Tickable {
         this.passengers = ConcurrentHashMap.newKeySet();
         this.location = new Location(0, 0, 0, 0, 0);
         this.viewerRules = new CopyOnWriteArrayList<>();
+        this.viewerTracker = new ViewerMetaTracker(this);
     }
 
     public WrapperEntity(int entityId, EntityType entityType) {
@@ -86,7 +90,7 @@ public class WrapperEntity implements Tickable {
                         createVeloPacket()
                 )
         );
-        sendPacketToViewers(entityMeta.createPacket());
+        viewers.forEach(viewer -> sendPacket(viewer, viewerTracker.getCustomEntityOrDefault(viewer).getEntityMeta().createPacket()));
         this.parent = parent;
         parent.addEntity(this);
         return true;
@@ -194,7 +198,9 @@ public class WrapperEntity implements Tickable {
                 sendPacket(uuid, p.tabListPacket());
             }
             sendPacket(uuid, createSpawnPacket());
-            sendPacket(uuid, entityMeta.createPacket());
+
+            final EntityMeta viewerMeta = viewerTracker.getCustomEntityOrDefault(uuid).getEntityMeta();
+            sendPacket(uuid, viewerMeta.createPacket());
         }
         if (EntityLib.getApi().getSettings().isDebugMode()) {
             EntityLib.getPlatform().getLogger().info("Added viewer " + uuid + " to entity " + entityId);
@@ -323,6 +329,14 @@ public class WrapperEntity implements Tickable {
         return entityId;
     }
 
+    public boolean hasCustomViewerMeta(@NotNull UUID viewer) {
+        return this.viewerTracker.hasCustomViewerMeta(viewer);
+    }
+
+    public boolean clearCustomViewerMeta(@NotNull UUID viewer) {
+        return this.viewerTracker.remove(viewer);
+    }
+
     public EntityMeta getEntityMeta() {
         return entityMeta;
     }
@@ -331,8 +345,21 @@ public class WrapperEntity implements Tickable {
         return metaClass.cast(entityMeta);
     }
 
+    public <T extends EntityMeta> T getViewerEntityMeta(@NotNull UUID uniqueId, @NotNull Class<T> metaClass) {
+        return metaClass.cast(viewerTracker.getCustomEntityOrDefault(uniqueId).getEntityMeta());
+    }
+
     public <T extends EntityMeta> void consumeEntityMeta(@NotNull Class<T> metaClass, Consumer<T> consumer) {
         T meta = getEntityMeta(metaClass);
+        consumer.accept(meta);
+    }
+
+    public <T extends EntityMeta> void consumeEntityMetaViewer(@NotNull UUID uniqueId, @NotNull Class<T> metaClass, Consumer<T> consumer) {
+        if (!this.viewers.contains(uniqueId)) {
+            return;
+        }
+
+        T meta = viewerTracker.getOrCreateEntity(uniqueId).getEntityMeta(metaClass);
         consumer.accept(meta);
     }
 
@@ -438,9 +465,15 @@ public class WrapperEntity implements Tickable {
         rotateHead(entity.getLocation());
     }
 
+    public void refresh(@NotNull UUID uniqueId) {
+        if (!spawned) return;
+        sendPacket(uniqueId, viewerTracker.getCustomEntityOrDefault(uniqueId).getEntityMeta().createPacket());
+        sendPacket(uniqueId, createPassengerPacket());
+    }
+
     public void refresh() {
         if (!spawned) return;
-        sendPacketToViewers(entityMeta.createPacket());
+        viewers.forEach(viewer -> sendPacket(viewer, viewerTracker.getCustomEntityOrDefault(viewer).getEntityMeta().createPacket()));
         sendPacketToViewers(createPassengerPacket());
     }
 
@@ -466,7 +499,7 @@ public class WrapperEntity implements Tickable {
         }
     }
 
-    private static void sendPacket(UUID user, PacketWrapper<?> wrapper) {
+    public static void sendPacket(UUID user, PacketWrapper<?> wrapper) {
         if (wrapper == null) return;
         Object channel = EntityLib.getApi().getPacketEvents().getProtocolManager().getChannel(user);
         if (channel == null) {
@@ -628,6 +661,10 @@ public class WrapperEntity implements Tickable {
         return location;
     }
 
+    public @NotNull ViewerMetaTracker getViewerTracker() {
+        return this.viewerTracker;
+    }
+
     @Override
     public void tick(long time) {
         if (isRiding()) {
@@ -643,5 +680,9 @@ public class WrapperEntity implements Tickable {
                 );
             }
         }
+    }
+
+    public WrapperEntity copy() {
+        return new WrapperEntity(this.entityId, this.uuid, this.entityType, this.entityMeta.copy());
     }
 }

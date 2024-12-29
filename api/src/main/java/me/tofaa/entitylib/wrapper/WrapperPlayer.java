@@ -11,6 +11,7 @@ import me.tofaa.entitylib.meta.EntityMeta;
 import net.kyori.adventure.text.Component;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class WrapperPlayer extends WrapperLivingEntity {
 
@@ -125,5 +126,27 @@ public class WrapperPlayer extends WrapperLivingEntity {
         );
     }
 
+    @Override
+    public WrapperPlayer copy() {
+        UserProfile profileCopy = new UserProfile(
+            this.profile.getUUID(),
+            this.profile.getName(),
+            this.profile.getTextureProperties()
+                .stream()
+                .map((tp) -> new TextureProperty(tp.getName(), tp.getValue(), tp.getSignature()))
+                .collect(Collectors.toList())
+        );
+
+        WrapperPlayer copy = new WrapperPlayer(profileCopy, this.getEntityId());
+
+        getAttributes().copyTo(copy.getAttributes());
+        getEquipment().copyTo(copy.getEquipment());
+        copy.setGameMode(this.gameMode);
+        copy.setDisplayName(this.displayName);
+        copy.setInTablist(this.tablist);
+        copy.setLatency(this.latency);
+
+        return copy;
+    }
 
 }

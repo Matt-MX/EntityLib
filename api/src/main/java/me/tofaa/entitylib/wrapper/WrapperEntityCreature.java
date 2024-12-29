@@ -88,4 +88,14 @@ public class WrapperEntityCreature extends WrapperLivingEntity {
         return Collections.unmodifiableSet(aiGroups);
     }
 
+    @Override
+    public WrapperEntityCreature copy() {
+        WrapperEntityCreature copy = new WrapperEntityCreature(this.getEntityId(), this.getUuid(), this.getEntityType(), this.getEntityMeta().copy());
+
+        copy.aiGroups.addAll(this.aiGroups);
+        getAttributes().copyTo(copy.getAttributes());
+        getEquipment().copyTo(copy.getEquipment());
+
+        return copy;
+    }
 }

@@ -29,6 +29,7 @@ public class WrapperExperienceOrbEntity extends WrapperEntity {
     public WrapperExperienceOrbEntity(UUID uuid, EntityType entityType) {
         this(EntityLib.getPlatform().getEntityIdProvider().provide(uuid, entityType), uuid, entityType);
     }
+
     public WrapperExperienceOrbEntity(EntityType entityType) {
         this(EntityLib.getPlatform().getEntityUuidProvider().provide(entityType), entityType);
     }
@@ -36,9 +37,9 @@ public class WrapperExperienceOrbEntity extends WrapperEntity {
     /**
      * Applies a slight slide motion towards the given location.
      * <p>
-     *     For this to work, this method needs to be called every tick until the entity reaches the location.
-     *     We don't have ticking or updating in this library, so you'll have to do it yourself.
-     *     This is an attempt to mimmick the vanilla behavior.
+     * For this to work, this method needs to be called every tick until the entity reaches the location.
+     * We don't have ticking or updating in this library, so you'll have to do it yourself.
+     * This is an attempt to mimmick the vanilla behavior.
      * </p>
      */
     @Override
@@ -77,12 +78,19 @@ public class WrapperExperienceOrbEntity extends WrapperEntity {
         return experience;
     }
 
-
-
     public void setExperience(short experience) {
         getViewers().forEach(this::removeViewer);
         this.experience = experience;
         getViewers().forEach(this::addViewer);
     }
 
+    @Override
+    public WrapperExperienceOrbEntity copy() {
+        WrapperExperienceOrbEntity copy = new WrapperExperienceOrbEntity(this.getEntityId(), this.getUuid(), this.getEntityType(), this.getEntityMeta().copy());
+
+        copy.experience = this.experience;
+        copy.slideTowards = this.slideTowards.clone();
+
+        return copy;
+    }
 }

@@ -288,4 +288,11 @@ public class EntityMeta implements EntityMetadataProvider {
     public Metadata getMetadata() {
         return metadata;
     }
+
+    public EntityMeta copy() {
+        Metadata metaData = new Metadata(this.entityId);
+        this.metadata.copyTo(metaData);
+
+        return new EntityMeta(this.entityId, metaData);
+    }
 }

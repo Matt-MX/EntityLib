@@ -7,7 +7,7 @@ import me.tofaa.entitylib.EntityLib;
 import me.tofaa.entitylib.meta.Metadata;
 import org.jetbrains.annotations.Nullable;
 
-public class    PlayerMeta extends LivingEntityMeta {
+public class PlayerMeta extends LivingEntityMeta {
 
     public static final byte OFFSET = LivingEntityMeta.MAX_OFFSET;
     public static final byte MAX_OFFSET = OFFSET + 1;
@@ -33,115 +33,115 @@ public class    PlayerMeta extends LivingEntityMeta {
     }
 
     public int getScore() {
-        return super.metadata.getIndex(offset(OFFSET,1), 0);
+        return super.metadata.getIndex(offset(OFFSET, 1), 0);
     }
 
     public void setScore(int value) {
-        super.metadata.setIndex(offset(OFFSET,1), EntityDataTypes.INT, value);
+        super.metadata.setIndex(offset(OFFSET, 1), EntityDataTypes.INT, value);
     }
 
     public boolean isCapeEnabled() {
         isVersionNewer(ServerVersion.V_1_9);
-        return getMaskBit(offset(OFFSET,2), CAPE_BIT);
+        return getMaskBit(offset(OFFSET, 2), CAPE_BIT);
     }
 
     public void setCapeEnabled(boolean value) {
         isVersionNewer(ServerVersion.V_1_9);
-        setMaskBit(offset(OFFSET,2), CAPE_BIT, value);
+        setMaskBit(offset(OFFSET, 2), CAPE_BIT, value);
     }
 
     public boolean isJacketEnabled() {
         isVersionNewer(ServerVersion.V_1_9);
-        return getMaskBit(offset(OFFSET,2), JACKET_BIT);
+        return getMaskBit(offset(OFFSET, 2), JACKET_BIT);
     }
 
     public void setJacketEnabled(boolean value) {
         isVersionNewer(ServerVersion.V_1_9);
-        setMaskBit(offset(OFFSET,2), JACKET_BIT, value);
+        setMaskBit(offset(OFFSET, 2), JACKET_BIT, value);
     }
 
     public boolean isLeftSleeveEnabled() {
         isVersionNewer(ServerVersion.V_1_9);
-        return getMaskBit(offset(OFFSET,2), LEFT_SLEEVE_BIT);
+        return getMaskBit(offset(OFFSET, 2), LEFT_SLEEVE_BIT);
     }
 
     public void setLeftSleeveEnabled(boolean value) {
         isVersionNewer(ServerVersion.V_1_9);
-        setMaskBit(offset(OFFSET,2), LEFT_SLEEVE_BIT, value);
+        setMaskBit(offset(OFFSET, 2), LEFT_SLEEVE_BIT, value);
     }
 
     public boolean isRightSleeveEnabled() {
         isVersionNewer(ServerVersion.V_1_9);
-        return getMaskBit(offset(OFFSET,2), RIGHT_SLEEVE_BIT);
+        return getMaskBit(offset(OFFSET, 2), RIGHT_SLEEVE_BIT);
     }
 
     public void setRightSleeveEnabled(boolean value) {
         isVersionNewer(ServerVersion.V_1_9);
-        setMaskBit(offset(OFFSET,2), RIGHT_SLEEVE_BIT, value);
+        setMaskBit(offset(OFFSET, 2), RIGHT_SLEEVE_BIT, value);
     }
 
     public boolean isLeftLegEnabled() {
         isVersionNewer(ServerVersion.V_1_9);
-        return getMaskBit(offset(OFFSET,2), LEFT_LEG_BIT);
+        return getMaskBit(offset(OFFSET, 2), LEFT_LEG_BIT);
     }
 
     public void setLeftLegEnabled(boolean value) {
         isVersionNewer(ServerVersion.V_1_9);
-        setMaskBit(offset(OFFSET,2), LEFT_LEG_BIT, value);
+        setMaskBit(offset(OFFSET, 2), LEFT_LEG_BIT, value);
     }
 
     public boolean isRightLegEnabled() {
         isVersionNewer(ServerVersion.V_1_9);
-        return getMaskBit(offset(OFFSET,2), RIGHT_LEG_BIT);
+        return getMaskBit(offset(OFFSET, 2), RIGHT_LEG_BIT);
     }
 
     public void setRightLegEnabled(boolean value) {
         isVersionNewer(ServerVersion.V_1_9);
-        setMaskBit(offset(OFFSET,2), RIGHT_LEG_BIT, value);
+        setMaskBit(offset(OFFSET, 2), RIGHT_LEG_BIT, value);
     }
 
     public boolean isHatEnabled() {
         isVersionNewer(ServerVersion.V_1_9);
-        return getMaskBit(offset(OFFSET,2), HAT_BIT);
+        return getMaskBit(offset(OFFSET, 2), HAT_BIT);
     }
 
     public void setHatEnabled(boolean value) {
         isVersionNewer(ServerVersion.V_1_9);
-        setMaskBit(offset(OFFSET,2), HAT_BIT, value);
+        setMaskBit(offset(OFFSET, 2), HAT_BIT, value);
     }
 
     public boolean isRightHandMain() {
         if (EntityLib.getApi().getPacketEvents().getServerManager().getVersion().isOlderThan(ServerVersion.V_1_9)) {
             return true;
         }
-        return super.metadata.getIndex(offset(OFFSET,3), (byte) 1) == (byte) 1;
+        return super.metadata.getIndex(offset(OFFSET, 3), (byte) 1) == (byte) 1;
     }
 
     public void setRightHandMain(boolean value) {
         if (EntityLib.getApi().getPacketEvents().getServerManager().getVersion().isOlderThan(ServerVersion.V_1_9)) {
             return;
         }
-        super.metadata.setIndex(offset(OFFSET,3), EntityDataTypes.BYTE, (byte) (value ? 1 : 0));
+        super.metadata.setIndex(offset(OFFSET, 3), EntityDataTypes.BYTE, (byte) (value ? 1 : 0));
     }
 
     public @Nullable NBTCompound getLeftShoulderData() {
         isVersionNewer(ServerVersion.V_1_11);
-        return super.metadata.getIndex(offset(OFFSET,4), null);
+        return super.metadata.getIndex(offset(OFFSET, 4), null);
     }
 
     public void setLeftShoulderData(@Nullable NBTCompound value) {
         if (value == null) value = new NBTCompound();
-        super.metadata.setIndex(offset(OFFSET,4), EntityDataTypes.NBT, value);
+        super.metadata.setIndex(offset(OFFSET, 4), EntityDataTypes.NBT, value);
     }
 
     public @Nullable NBTCompound getRightShoulderData() {
         isVersionNewer(ServerVersion.V_1_11);
-        return super.metadata.getIndex(offset(OFFSET,5), null);
+        return super.metadata.getIndex(offset(OFFSET, 5), null);
     }
 
     public void setRightShoulderData(@Nullable NBTCompound value) {
         if (value == null) value = new NBTCompound();
-        super.metadata.setIndex(offset(OFFSET,5), EntityDataTypes.NBT, value);
+        super.metadata.setIndex(offset(OFFSET, 5), EntityDataTypes.NBT, value);
     }
 
 }

@@ -2,7 +2,6 @@ package me.tofaa.entitylib.wrapper;
 
 import com.github.retrooper.packetevents.protocol.attribute.Attribute;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerUpdateAttributes;
-import org.w3c.dom.Attr;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,8 +26,8 @@ public final class WrapperEntityAttributes {
 
     public void setAttribute(Attribute attribute, double value, List<WrapperPlayServerUpdateAttributes.PropertyModifier> modifiers) {
         this.properties.stream()
-                .filter(property -> property.getAttribute() == attribute)
-                .findFirst().ifPresent(properties::remove);
+            .filter(property -> property.getAttribute() == attribute)
+            .findFirst().ifPresent(properties::remove);
         this.properties.add(new WrapperPlayServerUpdateAttributes.Property(attribute, value, modifiers));
         refresh();
     }
@@ -56,20 +55,20 @@ public final class WrapperEntityAttributes {
 
     public void removeAttribute(Attribute attribute, WrapperPlayServerUpdateAttributes.PropertyModifier modifier) {
         this.properties.stream()
-                .filter(property -> property.getAttribute() == attribute)
-                .findFirst().ifPresent(property -> {
-                    property.getModifiers().remove(modifier);
-                    if (property.getModifiers().isEmpty()) {
-                        properties.remove(property);
-                    }
-                });
+            .filter(property -> property.getAttribute() == attribute)
+            .findFirst().ifPresent(property -> {
+                property.getModifiers().remove(modifier);
+                if (property.getModifiers().isEmpty()) {
+                    properties.remove(property);
+                }
+            });
         refresh();
     }
 
     public void removeAttribute(Attribute attribute) {
         this.properties.stream()
-                .filter(property -> property.getAttribute() == attribute)
-                .findFirst().ifPresent(properties::remove);
+            .filter(property -> property.getAttribute() == attribute)
+            .findFirst().ifPresent(properties::remove);
         refresh();
     }
 
@@ -80,6 +79,16 @@ public final class WrapperEntityAttributes {
 
     public WrapperPlayServerUpdateAttributes createPacket() {
         return new WrapperPlayServerUpdateAttributes(entity.getEntityId(), properties);
+    }
+
+    public void copyTo(WrapperEntityAttributes copy) {
+        getProperties().forEach(property ->
+            copy.setAttribute(
+                property.getAttribute(),
+                property.getValue(),
+                new ArrayList<>(property.getModifiers())
+            )
+        );
     }
 
 }
