@@ -18,6 +18,7 @@ import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -233,7 +234,8 @@ public class EntityMeta implements EntityMetadataProvider {
 
     /**
      * Annoying java 8 not letting me do OFFSET + amount in the method call so this is a workaround
-     * @param value the value to offset
+     *
+     * @param value  the value to offset
      * @param amount the amount to offset by
      * @return the offset value
      */
@@ -262,7 +264,7 @@ public class EntityMeta implements EntityMetadataProvider {
     }
 
     public void setMaskBit(int index, byte bit, boolean value) {
-        byte mask = getMask((byte)index);
+        byte mask = getMask((byte) index);
         boolean currentValue = (mask & bit) == bit;
         if (currentValue == value) {
             return;
@@ -272,7 +274,7 @@ public class EntityMeta implements EntityMetadataProvider {
         } else {
             mask &= (byte) ~bit;
         }
-        setMask((byte)index, mask);
+        setMask((byte) index, mask);
     }
 
     @Override
@@ -293,6 +295,12 @@ public class EntityMeta implements EntityMetadataProvider {
         Metadata metaData = new Metadata(this.entityId);
         this.metadata.copyTo(metaData);
 
-        return new EntityMeta(this.entityId, metaData);
+        try {
+            return this.getClass()
+                .getConstructor(Integer.TYPE, Metadata.class)
+                .newInstance(this.entityId, metaData);
+        } catch (InstantiationException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

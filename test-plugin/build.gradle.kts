@@ -29,7 +29,9 @@ tasks {
     )
 
     val sharedBukkitPlugins = runPaper.downloadPluginsSpec {
-        modrinth("packetevents", "3Jr8ovul")
+        modrinth("packetevents", "2.7.0")
+        modrinth("ViaVersion", "5.2.0")
+        modrinth("ViaBackwards", "5.2.0")
     }
 
     runServer {

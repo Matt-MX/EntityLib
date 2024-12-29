@@ -45,7 +45,7 @@ public class ViewerMetaTracker {
     }
 
     public void consume(UUID viewer, Consumer<WrapperEntity> consumer) {
-        this.viewerMap.putIfAbsent(viewer, parent.copy());
+        this.viewerMap.putIfAbsent(viewer, copyParent(viewer));
 
         consumer.accept(getOrCreateEntity(viewer));
 
@@ -53,7 +53,7 @@ public class ViewerMetaTracker {
     }
 
     public <E extends WrapperEntity> void consumeEntity(UUID viewer, Consumer<E> consumer) {
-        this.viewerMap.putIfAbsent(viewer, parent.copy());
+        this.viewerMap.putIfAbsent(viewer, copyParent(viewer));
 
         consumer.accept((E) getOrCreateEntity(viewer));
 
@@ -61,12 +61,12 @@ public class ViewerMetaTracker {
     }
 
     public <E extends WrapperEntity> E getOrCreateEntityAs(UUID viewer) {
-        this.viewerMap.putIfAbsent(viewer, parent.copy());
+        this.viewerMap.putIfAbsent(viewer, copyParent(viewer));
         return (E) this.viewerMap.get(viewer);
     }
 
     public WrapperEntity getOrCreateEntity(UUID viewer) {
-        this.viewerMap.putIfAbsent(viewer, parent.copy());
+        this.viewerMap.putIfAbsent(viewer, copyParent(viewer));
         return this.viewerMap.get(viewer);
     }
 
@@ -91,8 +91,18 @@ public class ViewerMetaTracker {
 
     public void tryAutoRefresh(UUID viewer) {
         if (this.autoRefresh && this.parent.hasViewer(viewer)) {
-            this.parent.refresh(viewer);
+            if (this.hasCustomViewerMeta(viewer)) {
+                getCustomEntity(viewer).ifPresent(WrapperEntity::refresh);
+            } else {
+                parent.refresh();
+            }
         }
+    }
+
+    public WrapperEntity copyParent(UUID viewer) {
+        WrapperEntity copy = this.parent.copy();
+        copy.addViewer(viewer);
+        return copy;
     }
 
     public void setAutoRefresh(boolean autoRefresh) {

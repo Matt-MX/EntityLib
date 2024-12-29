@@ -33,6 +33,7 @@ public class TestEntityLibPlugin extends JavaPlugin {
             commandMap.register("testholo", new TestHologramsCommand());
             commandMap.register("testmassivepig", new TestMassivePigCommand());
             commandMap.register("testperplayer", new TestPerPlayerCommand());
+            commandMap.register("testperplayerhologram", new TestPerPlayerHologram());
         }
         catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();

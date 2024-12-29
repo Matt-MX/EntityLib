@@ -265,6 +265,7 @@ public class WrapperEntity implements Tickable {
             WrapperPlayer p = (WrapperPlayer) this;
             sendPacket(uuid, p.tabListRemovePacket());
         }
+        getViewerTracker().remove(uuid);
         sendPacket(uuid, new WrapperPlayServerDestroyEntities(entityId));
     }
 
@@ -463,12 +464,6 @@ public class WrapperEntity implements Tickable {
 
     public void rotateHead(WrapperEntity entity) {
         rotateHead(entity.getLocation());
-    }
-
-    public void refresh(@NotNull UUID uniqueId) {
-        if (!spawned) return;
-        sendPacket(uniqueId, viewerTracker.getCustomEntityOrDefault(uniqueId).getEntityMeta().createPacket());
-        sendPacket(uniqueId, createPassengerPacket());
     }
 
     public void refresh() {
