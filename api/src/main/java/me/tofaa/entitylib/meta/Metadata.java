@@ -70,6 +70,34 @@ public class Metadata {
         }
     }
 
+    // mainly used for internal use for batched updates
+    public void emitNotNotifiedChanges() {
+        if (!this.notifyAboutChanges) {
+            return;
+        }
+
+        List<EntityData<?>> entries;
+        synchronized (this.notNotifiedChanges) {
+            entries = new ArrayList<>(this.notNotifiedChanges.values());
+
+            // no changes to emit
+            if (entries.isEmpty()) {
+                return;
+            }
+
+            this.notNotifiedChanges.clear();
+        }
+
+        final WrapperEntity entity = EntityLib.getApi().getEntity(entityId);
+        if (entity == null || !entity.isSpawned()) {
+            return;
+        }
+
+        // emit packet
+        WrapperPlayServerEntityMetadata packet = new WrapperPlayServerEntityMetadata(entityId, entries);
+        entity.sendPacketsToViewers(packet);
+    }
+
     public void setNotifyAboutChanges(boolean notifyAboutChanges) {
         if (this.notifyAboutChanges == notifyAboutChanges) {
             return;
