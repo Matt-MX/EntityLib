@@ -8,7 +8,6 @@ import me.tofaa.entitylib.meta.mobs.*;
 import me.tofaa.entitylib.meta.mobs.DonkeyMeta;
 import me.tofaa.entitylib.meta.mobs.cuboid.MagmaCubeMeta;
 import me.tofaa.entitylib.meta.mobs.cuboid.SlimeMeta;
-import me.tofaa.entitylib.meta.mobs.golem.CopperGolemMeta;
 import me.tofaa.entitylib.meta.mobs.golem.IronGolemMeta;
 import me.tofaa.entitylib.meta.mobs.golem.ShulkerMeta;
 import me.tofaa.entitylib.meta.mobs.golem.SnowGolemMeta;
@@ -50,7 +49,7 @@ final class MetaConverterRegistry {
     MetaConverterRegistry() {
         put(ABSTRACT_WIND_CHARGE, SmallFireballMeta.class, SmallFireballMeta::new); // TODO: Verify correctness
         put(AREA_EFFECT_CLOUD, AreaEffectCloudMeta.class, AreaEffectCloudMeta::new);
-        put(ALLAY, AllayMeta.class, AllayMeta::new); // TODO: Verify correctness
+        put(ALLAY, LivingEntityMeta.class, LivingEntityMeta::new); // TODO: Implement
         put(ARMADILLO, ArmadilloMeta.class, ArmadilloMeta::new); // TODO: Verify correctness
         put(ARMOR_STAND, ArmorStandMeta.class, ArmorStandMeta::new);
         put(ARROW, ArrowMeta.class, ArrowMeta::new);
@@ -71,8 +70,7 @@ final class MetaConverterRegistry {
         put(COD, CodMeta.class, CodMeta::new);
         put(COMMAND_BLOCK_MINECART, CommandBlockMinecartMeta.class, CommandBlockMinecartMeta::new);
         put(COW, CowMeta.class, CowMeta::new);
-        put(COPPER_GOLEM, CopperGolemMeta.class, CopperGolemMeta::new); // TODO: Verify correctness
-        put(CREAKING, CreakingMeta.class, CreakingMeta::new); // TODO: Verify correctness
+        put(CREAKING, LivingEntityMeta.class, LivingEntityMeta::new); // TODO: Implement
         put(CREEPER, CreeperMeta.class, CreeperMeta::new);
         put(DOLPHIN, DolphinMeta.class, DolphinMeta::new);
         put(DONKEY, DonkeyMeta.class, DonkeyMeta::new);
@@ -153,7 +151,7 @@ final class MetaConverterRegistry {
         put(SQUID, SquidMeta.class, SquidMeta::new);
         put(STRAY, StrayMeta.class, StrayMeta::new);
         put(STRIDER, StriderMeta.class, StriderMeta::new);
-        put(TADPOLE, TadpoleMeta.class, TadpoleMeta::new); // TODO: Verify correctness
+        put(TADPOLE, LivingEntityMeta.class, LivingEntityMeta::new); // TODO: Implement
         put(TEXT_DISPLAY, TextDisplayMeta.class, TextDisplayMeta::new);
         put(THROWN_EXP_BOTTLE, ThrownExpBottleMeta.class, ThrownExpBottleMeta::new);
         put(TNT, TntMeta.class, TntMeta::new);
