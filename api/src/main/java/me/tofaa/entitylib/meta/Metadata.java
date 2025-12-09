@@ -66,7 +66,8 @@ public class Metadata {
             }
         }
         else {
-            entity.sendPacketToViewers(createPacket());
+            WrapperPlayServerEntityMetadata packet = new WrapperPlayServerEntityMetadata(entityId, Collections.singletonList(entry));
+            entity.sendPacketToViewers(packet);
         }
     }
 
