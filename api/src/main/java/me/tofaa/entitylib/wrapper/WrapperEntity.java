@@ -54,6 +54,7 @@ public class WrapperEntity implements Tickable {
     private final Set<Integer> passengers;
     private EntityContainer parent;
     private final List<ViewerRule> viewerRules;
+    private boolean pauseMetadataOnConsume = true;
 
     public WrapperEntity(int entityId, UUID uuid, EntityType entityType, EntityMeta entityMeta) {
         this.entityId = entityId;
@@ -370,11 +371,28 @@ public class WrapperEntity implements Tickable {
 
     public <T extends EntityMeta> void consumeEntityMeta(@NotNull Class<T> metaClass, @NotNull Consumer<T> consumer) {
         T meta = getEntityMeta(metaClass);
+
+        if (this.pauseMetadataOnConsume) {
+            meta.setNotifyAboutChanges(false);
+        }
+
         consumer.accept(meta);
+
+        if (this.pauseMetadataOnConsume) {
+            meta.setNotifyAboutChanges(true);
+        }
     }
 
     public void consumeMeta(@NotNull Consumer<EntityMeta> consumer) {
+        if (this.pauseMetadataOnConsume) {
+            entityMeta.setNotifyAboutChanges(false);
+        }
+
         consumer.accept(entityMeta);
+
+        if (this.pauseMetadataOnConsume) {
+            entityMeta.setNotifyAboutChanges(true);
+        }
     }
 
     public @NotNull UUID getUuid() {
@@ -692,6 +710,14 @@ public class WrapperEntity implements Tickable {
         return location;
     }
 
+    public boolean isPauseMetadataOnConsume() {
+        return pauseMetadataOnConsume;
+    }
+
+    public void setPauseMetadataOnConsume(boolean pauseMetadataOnConsume) {
+        this.pauseMetadataOnConsume = pauseMetadataOnConsume;
+    }
+
     @Override
     public void tick(long time) {
         if (isRiding()) {
@@ -708,4 +734,5 @@ public class WrapperEntity implements Tickable {
             }
         }
     }
+
 }
